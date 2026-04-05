@@ -2,7 +2,8 @@
 
 ## [0.0.6]
 
-<!-- Prepare for next release: remove this line and write your release notes -->
+### Fixed
+- `ListRecords`: reverted query argument back to `name` on `dns.zone(name: ...)` — the API confirmed `name` is correct via error hint; previous "no issue nothing" was a nil panic in v0.0.1 before nil-safety was added
 
 
 ## [0.0.5]

@@ -7,7 +7,7 @@ func (c *Client) ListRecords(ctx context.Context, zoneName string) ([]Record, er
 	const query = `
 		query ListRecords($zoneName: String!) {
 			dns {
-				zone(zoneName: $zoneName) {
+				zone(name: $zoneName) {
 					records {
 						id
 						name
