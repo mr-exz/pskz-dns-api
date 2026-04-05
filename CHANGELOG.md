@@ -5,6 +5,7 @@
 ### Fixed
 - `ListRecords`: reverted field name back to `value` — `content` was incorrect; `Record` type uses `value`, only `CreateRecord`/`DeleteRecord` mutation responses were affected by the Zone type mismatch
 - `Record.Value`: reverted JSON tag back to `json:"value"` to match the ps.kz API schema
+- `ListRecords`: changed query path from `dns.zone(name).records` to `dns.record.list(zoneName)` to match the mutation path convention used by create/delete
 
 
 ## [0.0.2]
