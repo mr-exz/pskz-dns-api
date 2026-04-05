@@ -2,7 +2,8 @@
 
 ## [0.0.5]
 
-<!-- Prepare for next release: remove this line and write your release notes -->
+### Fixed
+- `ListRecords`: changed query argument from `name` to `zoneName` on `dns.zone(...)` to match the argument convention used by the mutations; `dns.record` does not exist on `DnsQuery` type
 
 
 ## [0.0.4]

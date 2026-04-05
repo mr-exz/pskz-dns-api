@@ -7,8 +7,8 @@ func (c *Client) ListRecords(ctx context.Context, zoneName string) ([]Record, er
 	const query = `
 		query ListRecords($zoneName: String!) {
 			dns {
-				record {
-					list(zoneName: $zoneName) {
+				zone(zoneName: $zoneName) {
+					records {
 						id
 						name
 						type
@@ -21,9 +21,9 @@ func (c *Client) ListRecords(ctx context.Context, zoneName string) ([]Record, er
 
 	type response struct {
 		DNS struct {
-			Record struct {
-				List []Record `json:"list"`
-			} `json:"record"`
+			Zone struct {
+				Records []Record `json:"records"`
+			} `json:"zone"`
 		} `json:"dns"`
 	}
 
@@ -35,7 +35,7 @@ func (c *Client) ListRecords(ctx context.Context, zoneName string) ([]Record, er
 		return nil, err
 	}
 
-	return data.DNS.Record.List, nil
+	return data.DNS.Zone.Records, nil
 }
 
 // CreateRecord creates a new DNS record in the given zone.
