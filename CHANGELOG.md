@@ -2,7 +2,9 @@
 
 ## [0.0.3]
 
-<!-- Prepare for next release: remove this line and write your release notes -->
+### Fixed
+- `ListRecords`: reverted field name back to `value` — `content` was incorrect; `Record` type uses `value`, only `CreateRecord`/`DeleteRecord` mutation responses were affected by the Zone type mismatch
+- `Record.Value`: reverted JSON tag back to `json:"value"` to match the ps.kz API schema
 
 
 ## [0.0.2]

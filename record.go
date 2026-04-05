@@ -12,7 +12,7 @@ func (c *Client) ListRecords(ctx context.Context, zoneName string) ([]Record, er
 						id
 						name
 						type
-						content
+						value
 						ttl
 					}
 				}
