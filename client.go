@@ -172,5 +172,9 @@ func doAt[T any](ctx context.Context, c *Client, endpoint string, req gqlRequest
 		return nil, fmt.Errorf("graphql: %s", gqlResp.Errors[0].Message)
 	}
 
+	if gqlResp.Data == nil {
+		return nil, fmt.Errorf("pskzdns: no data in response")
+	}
+
 	return gqlResp.Data, nil
 }

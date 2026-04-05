@@ -20,7 +20,7 @@ type Record struct {
 	ID    string     `json:"id"`
 	Name  string     `json:"name"`
 	Type  RecordType `json:"type"`
-	Value string     `json:"value"`
+	Value string     `json:"content"`
 	TTL   int        `json:"ttl"`
 }
 

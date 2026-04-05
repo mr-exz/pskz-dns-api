@@ -2,7 +2,11 @@
 
 ## [0.0.2]
 
-<!-- Prepare for next release: remove this line and write your release notes -->
+### Fixed
+- `ListRecords`: changed requested field from `value` to `content` to match ps.kz API schema; records were returned with blank values previously
+- `CreateRecord`: mutation returns `Zone` type, not `Record`; response parsing updated to request only `name` from the zone; returned `Record` is now reconstructed from the input (ID will be empty)
+- `DeleteRecord`: same `Zone` return type fix; signature simplified to return `error` only
+- `doAt`: return an error instead of a nil pointer when the API response contains no `data` field
 
 
 ## [0.0.1]

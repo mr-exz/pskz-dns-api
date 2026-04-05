@@ -12,7 +12,7 @@ func (c *Client) ListRecords(ctx context.Context, zoneName string) ([]Record, er
 						id
 						name
 						type
-						value
+						content
 						ttl
 					}
 				}
@@ -39,17 +39,15 @@ func (c *Client) ListRecords(ctx context.Context, zoneName string) ([]Record, er
 }
 
 // CreateRecord creates a new DNS record in the given zone.
+// The mutation returns the updated Zone type, so the returned Record is
+// reconstructed from the input (ID will be empty).
 func (c *Client) CreateRecord(ctx context.Context, zoneName string, input CreateRecordInput) (*Record, error) {
 	const query = `
 		mutation CreateRecord($zoneName: String!, $name: String!, $type: RecordType!, $value: String!, $ttl: Int!) {
 			dns {
 				record {
 					create(zoneName: $zoneName, createData: {name: $name, type: $type, value: $value, ttl: $ttl}) {
-						id
 						name
-						type
-						value
-						ttl
 					}
 				}
 			}
@@ -58,12 +56,14 @@ func (c *Client) CreateRecord(ctx context.Context, zoneName string, input Create
 	type response struct {
 		DNS struct {
 			Record struct {
-				Create Record `json:"create"`
+				Create struct {
+					Name string `json:"name"`
+				} `json:"create"`
 			} `json:"record"`
 		} `json:"dns"`
 	}
 
-	data, err := do[response](ctx, c, gqlRequest{
+	if _, err := do[response](ctx, c, gqlRequest{
 		Query: query,
 		Variables: map[string]any{
 			"zoneName": zoneName,
@@ -72,27 +72,26 @@ func (c *Client) CreateRecord(ctx context.Context, zoneName string, input Create
 			"value":    input.Value,
 			"ttl":      input.TTL,
 		},
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, err
 	}
 
-	r := data.DNS.Record.Create
-	return &r, nil
+	return &Record{
+		Name:  input.Name,
+		Type:  input.Type,
+		Value: input.Value,
+		TTL:   input.TTL,
+	}, nil
 }
 
 // DeleteRecord deletes the DNS record with the given ID from the zone.
-func (c *Client) DeleteRecord(ctx context.Context, zoneName, recordID string) (*Record, error) {
+func (c *Client) DeleteRecord(ctx context.Context, zoneName, recordID string) error {
 	const query = `
 		mutation DeleteRecord($zoneName: String!, $recordId: String!) {
 			dns {
 				record {
 					delete(zoneName: $zoneName, recordId: $recordId) {
-						id
 						name
-						type
-						value
-						ttl
 					}
 				}
 			}
@@ -101,22 +100,19 @@ func (c *Client) DeleteRecord(ctx context.Context, zoneName, recordID string) (*
 	type response struct {
 		DNS struct {
 			Record struct {
-				Delete Record `json:"delete"`
+				Delete struct {
+					Name string `json:"name"`
+				} `json:"delete"`
 			} `json:"record"`
 		} `json:"dns"`
 	}
 
-	data, err := do[response](ctx, c, gqlRequest{
+	_, err := do[response](ctx, c, gqlRequest{
 		Query: query,
 		Variables: map[string]any{
 			"zoneName": zoneName,
 			"recordId": recordID,
 		},
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	r := data.DNS.Record.Delete
-	return &r, nil
+	return err
 }
